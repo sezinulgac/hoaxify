@@ -28,7 +28,7 @@ public class UserService {
       String encodedPassword = passwordEncoder.encode(user.getPassword());
       user.setPassword(encodedPassword);
       user.setActivationToken(UUID.randomUUID().toString());
-      userRepository.save(user);
+      userRepository.saveAndFlush(user);
       sendActivationEmail(user);
     } catch (DataIntegrityViolationException ex) {
       throw new NotUniqueEmailException();
