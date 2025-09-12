@@ -1,16 +1,10 @@
 package com.hoaxify.webservice.user;
 
-import com.hoaxify.webservice.user.validation.UniqueEmail;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = { "email" }))
@@ -19,20 +13,31 @@ public class User {
     @GeneratedValue
     long id;
 
-@NotBlank(message = "{hoaxify.constraint.username.notblank}")
-    @Size(min = 4, max = 250)
     String username;
 
-@NotBlank
-    @Email
-    @UniqueEmail
     String email;
 
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}", message = "{hoaxify.constraint.password.pattern}"
-
-    )
-
     String password;
+
+    boolean active = false;
+
+    String activationToken;
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public long getId() {
         return id;
