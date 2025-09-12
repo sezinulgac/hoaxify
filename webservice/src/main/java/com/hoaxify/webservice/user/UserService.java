@@ -7,11 +7,14 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -19,7 +22,7 @@ public class UserService {
   UserRepository userRepository;
 
   PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+@Transactional(rollbackOn = MailException.class)
   public void save(User user) {
     try {
       String encodedPassword = passwordEncoder.encode(user.getPassword());
