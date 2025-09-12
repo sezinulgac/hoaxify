@@ -1,9 +1,12 @@
 package com.hoaxify.webservice.user;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hoaxify.webservice.error.ApiError;
 import com.hoaxify.webservice.shared.GenericMessage;
+import com.hoaxify.webservice.shared.Messages;
 
 import jakarta.validation.Valid;
 
@@ -22,11 +26,17 @@ public class UserController {
     @Autowired
     UserService userService;
 
+   // @Autowired 
+    //MessageSource messageSource;
+    Locale locale = LocaleContextHolder.getLocale();
+
+
     @PostMapping("/api/v1/users")
     GenericMessage createUser(@Valid @RequestBody User user) {
-
+System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
         userService.save(user);
-        return new GenericMessage("User is created");
+        String message = Messages.getMessageForLocale("hoaxify.create.user.success.message",locale);
+        return new GenericMessage(message);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,7 +44,8 @@ public class UserController {
     ApiError handleMethodArgNotValidEx(MethodArgumentNotValidException exception) {
         ApiError apiError = new ApiError();
         apiError.setPath("/api/v1/users");
-        apiError.setMessage("Validation Error");
+        String message = Messages.getMessageForLocale("hoaxify.error.validation",locale);
+        apiError.setMessage(message);
         apiError.setStatus(400);
         Map<String, String> validationErrors = new HashMap<>();
         for (var fieldError : exception.getBindingResult().getFieldErrors()) {
@@ -49,11 +60,9 @@ public class UserController {
     ApiError handleNotUniqueEmailEx(NotUniqueEmailException exception) {
         ApiError apiError = new ApiError();
         apiError.setPath("/api/v1/users");
-        apiError.setMessage("Validation Error");
-        apiError.setStatus(400);
-        Map<String, String> validationErrors = new HashMap<>();
-        validationErrors.put("email", "E-mail in use");
-        apiError.setValidationErrors(validationErrors);
+        apiError.setMessage(exception.getMessage());
+        apiError.setStatus(400); 
+        apiError.setValidationErrors(exception.getValidationErrors());
 
         return apiError;
     }

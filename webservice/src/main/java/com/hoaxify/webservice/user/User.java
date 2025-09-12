@@ -28,7 +28,7 @@ public class User {
     @UniqueEmail
     String email;
 
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}", message = "The password must be at least 8 characters long and contain one uppercase letter, one lowercase letter and one number."
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}", message = "{hoaxify.constraint.password.pattern}"
 
     )
 

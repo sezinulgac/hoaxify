@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { signUp } from "./api";
 import { Input } from "./components/input";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "../../shared/components/LanguageSelector";
 
 export function SignUp() {
   const [username, setUsername] = useState();
@@ -11,7 +13,7 @@ export function SignUp() {
   const [successMessage, setSuccessMessage] = useState();
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState();
-
+  const { t } = useTranslation();
   // useEffect(() => {
   //   setErrors({});
   // }, [username]);
@@ -69,11 +71,10 @@ useEffect(() => {
       if (axiosError.response?.data?.status === 400) {
         if (axiosError.response.data.validationErrors) {
           setErrors(axiosError.response.data.validationErrors);
-          setGeneralError(
-            "Unexpected error ocured. Please try again."
+          setGeneralError(t('genericError')
           );
         } else {
-          setGeneralError("Unexpected error ocured. Please try again.");
+          setGeneralError(t('genericError'));
         }
       } 
     } finally {
@@ -83,7 +84,7 @@ useEffect(() => {
 
   let passwordRepeatError = useMemo(() => {
   if (password && password !== passwordRepeat) {
-   return 'Password mismatch';
+   return t('passwordMismatch')
   }
   return '';
 },[password, passwordRepeat]);
@@ -93,18 +94,18 @@ useEffect(() => {
       <div className="col-lg-6 offset-lg-3">
         <form className="card" onSubmit={onSubmit}>
           <div className="text-center card-header">
-            <h1>Sign Up</h1>
+            <h1>{t('signUp')}</h1>
           </div>
           <div className="card-body">
-            <Input id="username" label="Username" error={errors.username}
+            <Input id="username" label={t('username')} error={errors.username}
              onChange={(event) => setUsername(event.target.value)}/>
-            <Input id = "email" label = "Email" error={errors.email} 
+            <Input id = "email" label = {t('email')} error={errors.email} 
             onChange={(event)=>setEmail(event.target.value)}  />
-            <Input id = "password" label = "Password"  error={errors.password} 
+            <Input id = "password" label = {t('password')}  error={errors.password} 
             onChange={(event)=>setPassword(event.target.value)} type="password" /> 
 
- <Input id = "passwordRepeat" label = "Password Repeat"  error={passwordRepeatError} 
-            onChange={(event)=>setPasswordRepeat(event.target.value)} type="passwordRepeat" /> 
+ <Input id = "passwordRepeat" label = {t('passwordRepeat')}  error={passwordRepeatError} 
+            onChange={(event)=>setPasswordRepeat(event.target.value)} type="password" /> 
 
                       {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
@@ -131,6 +132,7 @@ useEffect(() => {
             </div>
           </div>
         </form>
+        <LanguageSelector/>
       </div>
     </div>
   );
