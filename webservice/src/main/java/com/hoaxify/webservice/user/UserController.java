@@ -29,14 +29,12 @@ public class UserController {
 
    // @Autowired 
     //MessageSource messageSource;
-    Locale locale = LocaleContextHolder.getLocale();
-
 
     @PostMapping("/api/v1/users")
     GenericMessage createUser(@Valid @RequestBody UserCreate user) {
 System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
         userService.save(user.toUser());
-        String message = Messages.getMessageForLocale("hoaxify.create.user.success.message",locale);
+        String message = Messages.getMessageForLocale("hoaxify.create.user.success.message",LocaleContextHolder.getLocale());
         return new GenericMessage(message);
     }
 
@@ -45,7 +43,7 @@ System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
     ApiError handleMethodArgNotValidEx(MethodArgumentNotValidException exception) {
         ApiError apiError = new ApiError();
         apiError.setPath("/api/v1/users");
-        String message = Messages.getMessageForLocale("hoaxify.error.validation",locale);
+        String message = Messages.getMessageForLocale("hoaxify.error.validation", LocaleContextHolder.getLocale());
         apiError.setMessage(message);
         apiError.setStatus(400);
         Map<String, String> validationErrors = new HashMap<>();
