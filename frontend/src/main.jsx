@@ -1,11 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 //import App from './App.jsx'
-import { SignUp } from "./pages/SignUp/index.jsx";
-import "./styles.scss";
+import { RouterProvider } from "react-router-dom";
 import "./locales";
+import "./styles.scss";
+import router from "./router/index.js";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SignUp />
+    <RouterProvider router={router} />
   </StrictMode>
 );

@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import { signUp } from "./api";
 import { Input } from "./components/input";
 import { useTranslation } from "react-i18next";
-import { LanguageSelector } from "../../shared/components/LanguageSelector";
 
 export function SignUp() {
   const [username, setUsername] = useState();
@@ -132,12 +131,11 @@ return (
                   aria-hidden="true"
                 ></span>
               )}
-              Sign Up
+             {t('signUp')}
             </button>
           </div>
         </div>
       </form>
-      <LanguageSelector />
     </div>
   </div>
 );
