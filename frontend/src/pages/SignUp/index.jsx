@@ -22,35 +22,35 @@ export function SignUp() {
   // }, [email]);
 
   useEffect(() => {
-  setErrors((lastErrors) => {
-    return {
-      ...lastErrors,
-      username: undefined
-    };
-  });
-}, [username]);
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors,
+        username: undefined
+      };
+    });
+  }, [username]);
 
   useEffect(() => {
-  setErrors((lastErrors) => {
-    return {
-      ...lastErrors,
-     email: undefined
-    };
-  });
-}, [email]);
-
-useEffect(() => {
-  setErrors((lastErrors) => {
-    return {
-      ...lastErrors,
-     password: undefined
-    };
-  });
-}, [password]);
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors,
+        email: undefined
+      };
+    });
+  }, [email]);
 
   useEffect(() => {
-  setGeneralError(undefined);
-}, [username, email]);
+    setErrors((lastErrors) => {
+      return {
+        ...lastErrors,
+        password: undefined
+      };
+    });
+  }, [password]);
+
+  useEffect(() => {
+    setGeneralError(undefined);
+  }, [username, email]);
 
 
 
@@ -66,74 +66,79 @@ useEffect(() => {
         password,
       });
       setSuccessMessage(response.data.message);
-    } catch (axiosError) {
-      console.log(axiosError.response.data);
-      if (axiosError.response?.data?.status === 400) {
-        if (axiosError.response.data.validationErrors) {
-          setErrors(axiosError.response.data.validationErrors);
-          setGeneralError(t('genericError')
-          );
-        } else {
-          setGeneralError(t('genericError'));
-        }
-      } 
-    } finally {
+    } catch(axiosError){
+
+if(axiosError.response?.data){
+  if(axiosError.response.data.status===400){
+    setErrors(axiosError.response.data.validationErrors);
+
+  }
+  else{
+    setGeneralError(axiosError.response.data.message);
+  }
+}
+else{
+  setGeneralError(t("genericError"));
+}
+
+    }
+    finally{
       setApiProgress(false);
     }
-  };
+    };
 
-  let passwordRepeatError = useMemo(() => {
+let passwordRepeatError = useMemo(() => {
   if (password && password !== passwordRepeat) {
-   return t('passwordMismatch')
+    return t('passwordMismatch')
   }
   return '';
-},[password, passwordRepeat]);
- 
-  return (
-    <div className="container">
-      <div className="col-lg-6 offset-lg-3">
-        <form className="card" onSubmit={onSubmit}>
-          <div className="text-center card-header">
-            <h1>{t('signUp')}</h1>
-          </div>
-          <div className="card-body">
-            <Input id="username" label={t('username')} error={errors.username}
-             onChange={(event) => setUsername(event.target.value)}/>
-            <Input id = "email" label = {t('email')} error={errors.email} 
-            onChange={(event)=>setEmail(event.target.value)}  />
-            <Input id = "password" label = {t('password')}  error={errors.password} 
-            onChange={(event)=>setPassword(event.target.value)} type="password" /> 
+}, [password, passwordRepeat, t]);
 
- <Input id = "passwordRepeat" label = {t('passwordRepeat')}  error={passwordRepeatError} 
-            onChange={(event)=>setPasswordRepeat(event.target.value)} type="password" /> 
+return (
+  <div className="container">
+    <div className="col-lg-6 offset-lg-3">
+      <form className="card" onSubmit={onSubmit}>
+        <div className="text-center card-header">
+          <h1>{t('signUp')}</h1>
+        </div>
+        <div className="card-body">
+          <Input id="username" label={t('username')} error={errors.username}
+            onChange={(event) => setUsername(event.target.value)} />
+          <Input id="email" label={t('email')} error={errors.email}
+            onChange={(event) => setEmail(event.target.value)} />
+          <Input id="password" label={t('password')} error={errors.password}
+            onChange={(event) => setPassword(event.target.value)} type="password" />
 
-                      {successMessage && (
-              <div className="alert alert-success">{successMessage}</div>
-            )}
-            {generalError && (
-              <div className="alert alert-danger">{generalError}</div>
-            )}
-            <div className="text-center">
-              <button
-                disabled={
-                  apiProgress || !password || password !== passwordRepeat
-                }
-                className="btn btn-primary"
-                onClick={onSubmit}
-              >
-                {apiProgress && (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Sign Up
-              </button>
-            </div>
+          <Input id="passwordRepeat" label={t('passwordRepeat')} error={passwordRepeatError}
+            onChange={(event) => setPasswordRepeat(event.target.value)} type="password" />
+
+          {successMessage && (
+            <div className="alert alert-success">{successMessage}</div>
+          )}
+          {generalError && (
+            <div className="alert alert-danger">{generalError}</div>
+          )}
+          <div className="text-center">
+            <button
+              disabled={
+                apiProgress || !password || password !== passwordRepeat
+              }
+              className="btn btn-primary"
+              onClick={onSubmit}
+            >
+              {apiProgress && (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Sign Up
+            </button>
           </div>
-        </form>
-        <LanguageSelector/>
-      </div>
+        </div>
+      </form>
+      <LanguageSelector />
     </div>
-  );
+  </div>
+);
 }

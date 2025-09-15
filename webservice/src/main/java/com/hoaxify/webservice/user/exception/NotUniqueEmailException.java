@@ -1,4 +1,4 @@
-package com.hoaxify.webservice.user;
+package com.hoaxify.webservice.user.exception;
 
 import java.util.Collections;
 import java.util.Map;
