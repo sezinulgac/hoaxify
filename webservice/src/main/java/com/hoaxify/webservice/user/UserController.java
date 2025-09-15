@@ -7,6 +7,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,6 +19,7 @@ import com.hoaxify.webservice.shared.GenericMessage;
 import com.hoaxify.webservice.shared.Messages;
 import com.hoaxify.webservice.user.dto.UserCreate;
 import com.hoaxify.webservice.user.exception.ActivationNotificationException;
+import com.hoaxify.webservice.user.exception.InvalidTokenException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
 
 import jakarta.validation.Valid;
@@ -26,9 +29,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-   // @Autowired 
-    //MessageSource messageSource;
-
     @PostMapping("/api/v1/users")
     GenericMessage createUser(@Valid @RequestBody UserCreate user) {
 System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
@@ -36,6 +36,15 @@ System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
         String message = Messages.getMessageForLocale("hoaxify.create.user.success.message",LocaleContextHolder.getLocale());
         return new GenericMessage(message);
     }
+
+    @PatchMapping("/api/v1/users/{token}/active")
+        GenericMessage activateUser(@PathVariable String token) {
+System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
+userService.activateUser(token);
+        String message = Messages.getMessageForLocale("hoaxify.activate.user.success.message",LocaleContextHolder.getLocale());
+        return new GenericMessage(message);
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -71,6 +80,16 @@ System.err.println("---------" + LocaleContextHolder.getLocale().getLanguage());
         apiError.setPath("/api/v1/users");
         apiError.setMessage(exception.getMessage());
         apiError.setStatus(502); 
+        return apiError;
+    }
+
+     @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleInvalidTokenException(InvalidTokenException exception) {
+        ApiError apiError = new ApiError();
+        apiError.setPath("/api/v1/users");
+        apiError.setMessage(exception.getMessage());
+        apiError.setStatus(400); 
         return apiError;
     }
 }

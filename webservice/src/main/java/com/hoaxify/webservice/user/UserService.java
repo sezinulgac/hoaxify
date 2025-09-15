@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.hoaxify.webservice.email.EmailService;
 import com.hoaxify.webservice.user.exception.ActivationNotificationException;
+import com.hoaxify.webservice.user.exception.InvalidTokenException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
 
 import jakarta.transaction.Transactional;
@@ -37,6 +38,17 @@ public class UserService {
     } catch (MailException ex) {
       throw new ActivationNotificationException();
     }
+  }
+
+  public void activateUser(String token) {
+    User inDB = userRepository.findByActivationToken(token);
+    if (inDB == null) {
+      throw new InvalidTokenException();
+    }
+    inDB.setActive(true);
+    inDB.setActivationToken(null);
+    userRepository.save(inDB);
+    
   }
 
 }
