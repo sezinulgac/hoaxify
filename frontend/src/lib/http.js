@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { i18Instance } from "../locales";
+import { i18Instance } from "@/locales";
 
 const http = axios.create();
 

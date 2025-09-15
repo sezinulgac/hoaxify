@@ -2,8 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { signUp } from "./api";
 import { Input } from "./components/input";
 import { useTranslation } from "react-i18next";
-import { Alert } from "../../shared/components/Alert";
-import { Spinner } from "../../shared/components/Spinner";
+import { Alert } from "@/shared/components/Alert.jsx";
+import { Spinner } from "@/shared/components/Spinner.jsx";
 
 export function SignUp() {
   const [username, setUsername] = useState();

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/hoaxify.png";
+import logo from "@/assets/hoaxify.png";
 import { useTranslation } from "react-i18next";
 
 export function Navbar(){
