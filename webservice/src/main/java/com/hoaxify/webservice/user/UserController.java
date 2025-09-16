@@ -1,6 +1,7 @@
 package com.hoaxify.webservice.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -23,6 +24,9 @@ import com.hoaxify.webservice.user.exception.InvalidTokenException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 public class UserController {
@@ -44,6 +48,12 @@ userService.activateUser(token);
         String message = Messages.getMessageForLocale("hoaxify.activate.user.success.message",LocaleContextHolder.getLocale());
         return new GenericMessage(message);
     }
+
+    @GetMapping("/api/v1/users")
+    List<User> getUsers() {
+        return userService.getUsers();
+    }
+    
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
