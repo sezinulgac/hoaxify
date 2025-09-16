@@ -1,19 +1,22 @@
 package com.hoaxify.webservice.user;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.hoaxify.webservice.error.ApiError;
 import com.hoaxify.webservice.shared.GenericMessage;
@@ -24,8 +27,6 @@ import com.hoaxify.webservice.user.exception.InvalidTokenException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -50,8 +51,8 @@ userService.activateUser(token);
     }
 
     @GetMapping("/api/v1/users")
-    List<User> getUsers() {
-        return userService.getUsers();
+    Page<User> getUsers(Pageable pageable) {
+        return userService.getUsers(pageable);
     }
     
 
