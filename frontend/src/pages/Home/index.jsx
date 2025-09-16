@@ -1,5 +1,6 @@
+import { UserList } from "./components/UserList"
+
 export function Home() {
 
-    return <div>Home
-    </div>
+    return <UserList/>
 }
