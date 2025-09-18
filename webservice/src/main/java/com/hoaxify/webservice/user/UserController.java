@@ -22,6 +22,7 @@ import com.hoaxify.webservice.error.ApiError;
 import com.hoaxify.webservice.shared.GenericMessage;
 import com.hoaxify.webservice.shared.Messages;
 import com.hoaxify.webservice.user.dto.UserCreate;
+import com.hoaxify.webservice.user.dto.UserDTO;
 import com.hoaxify.webservice.user.exception.ActivationNotificationException;
 import com.hoaxify.webservice.user.exception.InvalidTokenException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
@@ -51,8 +52,8 @@ userService.activateUser(token);
     }
 
     @GetMapping("/api/v1/users")
-    Page<User> getUsers(Pageable pageable) {
-        return userService.getUsers(pageable);
+    Page<UserDTO> getUsers(Pageable page) {
+        return userService.getUsers(page).map(UserDTO::new);
     }
     
 
