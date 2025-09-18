@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getUser } from "./api";
 import { Alert } from "@/shared/components/Alert";
 import { Spinner } from "@/shared/components/Spinner";
+import { withTranslation } from "react-i18next";
 
 export class UserClass extends Component {
   state = {
@@ -17,9 +18,10 @@ export class UserClass extends Component {
       this.setState({
         user: response.data,
       });
+    // eslint-disable-next-line no-unused-vars
     } catch (axiosError) {
       this.setState({
-        error: axiosError.response.data.message,
+        error: this.props.t('userNotFoundError'),
       });
       /* empty */
     } finally {
@@ -43,8 +45,12 @@ export class UserClass extends Component {
   }
 }
 
+
+const UserPageWithTraslation= withTranslation()(UserClass)
 export function User() {
   const { id } = useParams();
 
-  return <UserClass id={id} />;
+
+
+  return <UserPageWithTraslation id={id}  />;
 }
