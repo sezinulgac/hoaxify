@@ -25,8 +25,9 @@ import com.hoaxify.webservice.user.dto.UserCreate;
 import com.hoaxify.webservice.user.dto.UserDTO;
 import com.hoaxify.webservice.user.exception.ActivationNotificationException;
 import com.hoaxify.webservice.user.exception.InvalidTokenException;
+import com.hoaxify.webservice.user.exception.NotFoundException;
 import com.hoaxify.webservice.user.exception.NotUniqueEmailException;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -57,6 +58,10 @@ userService.activateUser(token);
     }
     
 
+    @GetMapping("/api/v1/users/{id}")
+    UserDTO getUserById(@PathVariable long id){
+        return new UserDTO(userService.getUser(id));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -97,11 +102,20 @@ userService.activateUser(token);
 
      @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ApiError handleInvalidTokenException(InvalidTokenException exception) {
+    ApiError handleInvalidTokenException(InvalidTokenException exception,HttpServletRequest request) {
         ApiError apiError = new ApiError();
-        apiError.setPath("/api/v1/users");
+        apiError.setPath(request.getRequestURI());
         apiError.setMessage(exception.getMessage());
         apiError.setStatus(400); 
+        return apiError;
+    }
+      @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleNotFoundException(NotFoundException exception,HttpServletRequest request) {
+        ApiError apiError = new ApiError();
+        apiError.setPath(request.getRequestURI());
+        apiError.setMessage(exception.getMessage());
+        apiError.setStatus(404); 
         return apiError;
     }
 }
